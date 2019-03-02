@@ -12,24 +12,28 @@ const nodemailer = require("nodemailer");
     }
   });
 
-function send(to,msg,cb){
-  let mailOptions = {
-    from: '"Fred Foo 👻" <1421113780@qq.com>', 
-    to: to, 
-    subject:"1823邮箱注册验证码", //标题
-    text:`欢迎注册，您的验证码是；${msg};五分钟有效`, //内容
-    // html: "<h1>`1</h1>" // 
-  };
-  //通过请求对象的sendmail方法   参数有发送消息对象和回电函数
-  transporter.sendMail(mailOptions,(err,info)=>{
-    // console.log(err)  //打印信息err为null基本是对的
-    // console.log(info)
-    if(err){
-      cb(err) //失败
-    }else{
-      cb(null)  //成功
-    }
-})
+function send(to,msg){
+  return new Promise((resolve,reject)=>{
+    let mailOptions = {
+      from: '"Fred Foo 👻" <1421113780@qq.com>', 
+      to: to, 
+      subject:"1823邮箱注册验证码", //标题
+      text:`欢迎注册，您的验证码是；${msg};五分钟有效`, //内容
+      // html: "<h1>`1</h1>" // 
+    };
+    //通过请求对象的sendmail方法   参数有发送消息对象和回电函数
+    transporter.sendMail(mailOptions,(err,info)=>{
+      // console.log(err)  //打印信息err为null基本是对的
+      // console.log(info)
+      if(err){
+        resolve() //失败
+      }else{
+        reject()  //成功
+      }
+    })
+  })
+  
+  
 }
 
 //send('1421113780@qq.com',123456)

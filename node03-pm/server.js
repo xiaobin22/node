@@ -6,22 +6,32 @@ const mail=require('./utils/mail')
 // app.use(bodyParser.json())//解析 json 格式的数据
 app.use(bodyParser.urlencoded({extended:true}))  //解析 form 表单的post数据
 //{extended:true}解决错误
-app.post('/reg',(req,res)=>{
+let checks={}//保存账号和验证码
+app.post('/reg',(req,res)=>{    //验证码的逻辑   时间验证（时间差）
     let{email,ps,code}=req.body
     //验证code是否真确
-    res.send('reg ok')
+    // console.log(checks)
+    if(checks[email]==code){
+        //将账号密码存入数据库
+        res.send({err:0,msg:'注册ok'})
+    }
+    else{
+        res.send({err:-1,msg:'验证码错误，请重试'})
+    }
+   
 })
 app.post('/getEmailCode',(req,res)=>{
+   
     let email=req.body.email//前端以email为key值传过来
     // let {email}=req.body  解构赋值
     let code=parseInt(Math.random()*100000)
-    mail.send(email,code,(err)=>{
-        if(err){
-            res.send({err:-1,msg:'获取验证码失败'})
-        }else{
-            res.send({err:0,msg:'获取验证码成功'})
-            //这里不需要data 因为验证码发给用户邮箱
-        }
+    checks[email]=code
+    mail.send(email,code)
+    .then(()=>{
+        res.send({err:-1,msg:'获取验证码失败'})
+    })
+    .catch(()=>{
+        res.send({err:0,msg:'获取验证码成功'})
     })
     
 })
@@ -49,4 +59,6 @@ app.listen(3000, () =>{
      msg:信息
      data: 数据
  }
+
+ 十人原则
 */

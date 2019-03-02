@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>socket</title>
+</head>
+<body>
+    <input type="text">
+    <button onclick="sendServer()">发送</button>
+    <script>
+         const ws=new WebSocket('ws://localhost:8080') 
+         //已经连接
+         ws.onopen=()=>{
+             ws.send('大家吼')
+         }  
+         //接受服务器消息
+         ws.onmessage=(msg)=>{
+            //  const content=document.getElementById('content')
+            //  content.innerHTML+=msg.data+'<br/>'
+            console.log(msg)
+         }
+        //  错误的时候触发
+         ws.onerror=(err)=>{
+             console.log(err)
+         }
+        //  服务器断开连接触发
+         ws.onclose=()=>{
+             console.log('closed~')
+         }
+
+        //  ws.send(msg2)
+         function sendServer(){
+             let test=document.getElementsByTagName('input')[0].value
+             ws.send(test)
+         }
+    </script>
+</body>
+</html>
